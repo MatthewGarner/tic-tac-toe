@@ -18,6 +18,20 @@
     border-right-color: white;
 }
 
+.board-square p {
+    font-size: 7rem;
+}
+
+.team-select {
+    display: inline-block;
+    background-color: teal;
+    border-style: unset;
+    color: white;
+    width: 6vw;
+    height: 5vh;
+    font-size: larger;
+}
+
 
 #game-board-area {
     background-color: aqua;
@@ -39,8 +53,8 @@
 
 #top-div {
     height: 10vh;
+    text-align: center;
+    position: relative;
+    padding-top: 3vh;
 }
 
-.board-square p {
-    font-size: 7rem;
-}
