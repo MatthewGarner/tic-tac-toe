@@ -3,6 +3,22 @@
     margin: 0 auto;
 }
 
+.board-square {
+    width: 100%;
+    background-color: white;
+    border-style: solid;
+    border-color: white black black white;
+}
+
+.no-bottom {
+    border-bottom-color: white;
+}
+
+.no-right {
+    border-right-color: white;
+}
+
+
 #game-board-area {
     background-color: aqua;
 }
@@ -12,5 +28,19 @@
     grid-template-columns: repeat(3, minmax(100px, 1fr));
     grid-template-rows: repeat(3, minmax(100px, 1fr));
     background-color: red;
-    width: 70vw;
+    width: 40vw;
+    height: 40vw;
+    min-height: 300px;
+}
+
+#score-area {
+    height: 5vh;
+}
+
+#top-div {
+    height: 10vh;
+}
+
+.board-square p {
+    font-size: 7rem;
 }
