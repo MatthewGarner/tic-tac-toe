@@ -45,7 +45,8 @@ const playerFactory = (name, team) => {
 //Gameboard module - store information and functions related to the game board
 
 const Gameboard = (() => {
-    let gameBoard = new Array(9);
+    //let gameBoard = new Array(9);
+    let gameBoard = Array.apply(null, Array(9));
 
     const initialiseGameBoard = () => {
         const boardSquares = document.querySelectorAll('.board-square');
@@ -75,16 +76,16 @@ const Gameboard = (() => {
     const getUnoccupiedSquares = () => {
         let availableSquares = [];
 
-        console.table(gameBoard);
-
         gameBoard.forEach((square, i) => {
-            if ((square == 'X' || square == 'O')) {
+            if (square !== 'X' && square !== 'O') {
                 availableSquares.push(i);
+                
             }
             
             
 
         })
+        
         return availableSquares;
     }
     
