@@ -55,18 +55,18 @@ const Gameboard = (() => {
             //access with square.dataset.squareNumber
 
             square.addEventListener('click', e => {
+                //Should this be in the game module?
                 const pressedSquare = e.target.dataset.squareNumber;
                 
-                _setSquare(pressedSquare, game.player1.getTeamIcon());
+                setSquare(pressedSquare, game.player1.getTeamIcon());
+                game.computerMove();
             });
         });
     };
 
-    const _setSquare = (squareNumber, team) => {
+    const setSquare = (squareNumber, team) => {
         const locationInArray = squareNumber - 1;
         gameBoard[locationInArray] = team;
-        
-
 
         displayController.renderBoard();
     };
@@ -79,11 +79,7 @@ const Gameboard = (() => {
         gameBoard.forEach((square, i) => {
             if (square !== 'X' && square !== 'O') {
                 availableSquares.push(i);
-                
             }
-            
-            
-
         })
         
         return availableSquares;
@@ -92,7 +88,8 @@ const Gameboard = (() => {
     return {
         getBoardSquare, 
         initialiseGameBoard, 
-        getUnoccupiedSquares
+        getUnoccupiedSquares,
+        setSquare
     };
 })();
 
@@ -123,7 +120,6 @@ const displayController = (() => {
 //Game module to control flow
 
 const game = (() => {
-
     const computer = playerFactory("Computer");
     const player1 = playerFactory();
 
@@ -166,15 +162,56 @@ const game = (() => {
     teamButtons.forEach(button => button.addEventListener('click', _setNameAndTeams));
     
     const computerMove = () => {
+        
+        if (_checkHorizontalVictory()) {
+            alert('Player Wins!');
+            return;
+        }
 
+
+        //dumb logic - grab first available space
+
+        const availableMoves = Gameboard.getUnoccupiedSquares();
+        console.log(availableMoves);
+        const chosenMove = availableMoves[0] + 1; //setSquare needs square number
+        console.log(chosenMove);
+        Gameboard.setSquare(chosenMove, computer.getTeamIcon());
+        
     }; 
+
+    const _checkForAvailableMoves = () => {
+        const movesAreAvailable = (Gameboard.getUnoccupiedSquares().length !== 0) ?
+            true :
+            false;
+            return movesAreAvailable;
+    }
+
+    const _checkHorizontalVictory = () => {
+        //Horizontals - 1,2,3 + 4,5,6 + 7,8,9
+
+        let isVictory;
+
+        if ((Gameboard.getBoardSquare(1) == 'X' || Gameboard.getBoardSquare(1) == 'O') &&
+                Gameboard.getBoardSquare(1)  == Gameboard.getBoardSquare(2) &&
+                Gameboard.getBoardSquare(3)  == Gameboard.getBoardSquare(2)) {
+                    isVictory = true;
+                    return isVictory;
+                } else if ((Gameboard.getBoardSquare(4) == 'X' || Gameboard.getBoardSquare(4) == 'O') &&
+                Gameboard.getBoardSquare(4)  == Gameboard.getBoardSquare(5) &&
+                Gameboard.getBoardSquare(5)  == Gameboard.getBoardSquare(6)) {
+                    isVictory = true;
+                    return isVictory;
+                }
+                else return false;
+    }
 
     //
 
     return {
         getPlayerNameFromUser, 
         player1,
-        computer
+        computer,
+        computerMove
     };
 })();
 
