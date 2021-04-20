@@ -54,13 +54,7 @@ const Gameboard = (() => {
             square.setAttribute('data-square-number', i + 1);
             //access with square.dataset.squareNumber
 
-            square.addEventListener('click', e => {
-                //Should this be in the game module?
-                const pressedSquare = e.target.dataset.squareNumber;
-                
-                setSquare(pressedSquare, game.player1.getTeamIcon());
-                game.computerMove();
-            });
+            square.addEventListener('click', game.playerMove);
         });
     };
 
@@ -71,7 +65,7 @@ const Gameboard = (() => {
         displayController.renderBoard();
     };
 
-    const getBoardSquare = (number) => gameBoard[number];
+    const getBoardSquare = (number) => gameBoard[number - 1];
 
     const getUnoccupiedSquares = () => {
         let availableSquares = [];
@@ -100,7 +94,7 @@ const displayController = (() => {
     const renderBoard = () => {
         const boardSquares = document.querySelectorAll('.board-square');
         boardSquares.forEach((square, i) => {  
-            const latestSquareValue = Gameboard.getBoardSquare(i);
+            const latestSquareValue = Gameboard.getBoardSquare(i + 1);
             square.querySelector('p').textContent = latestSquareValue;
     });
 }
@@ -122,6 +116,7 @@ const displayController = (() => {
 const game = (() => {
     const computer = playerFactory("Computer");
     const player1 = playerFactory();
+    let isVictory;
 
     const getPlayerNameFromUser = (message) => {
         let playerName;
@@ -161,13 +156,17 @@ const game = (() => {
 
     teamButtons.forEach(button => button.addEventListener('click', _setNameAndTeams));
     
-    const computerMove = () => {
-        
-        if (_checkHorizontalVictory()) {
-            alert('Player Wins!');
-            return;
-        }
+    const playerMove = (e) => {
+                const pressedSquare = e.target.dataset.squareNumber;
+                Gameboard.setSquare(pressedSquare, player1.getTeamIcon());
+                if (_checkForVictory()) {
+                    alert('Player Wins!');
+                    return;
+                };
+                window.setTimeout(game.computerMove(), 1500);
+    }
 
+    const computerMove = () => {
 
         //dumb logic - grab first available space
 
@@ -184,12 +183,11 @@ const game = (() => {
             true :
             false;
             return movesAreAvailable;
-    }
+    };
 
     const _checkHorizontalVictory = () => {
         //Horizontals - 1,2,3 + 4,5,6 + 7,8,9
 
-        let isVictory;
 
         if ((Gameboard.getBoardSquare(1) == 'X' || Gameboard.getBoardSquare(1) == 'O') &&
                 Gameboard.getBoardSquare(1)  == Gameboard.getBoardSquare(2) &&
@@ -201,9 +199,63 @@ const game = (() => {
                 Gameboard.getBoardSquare(5)  == Gameboard.getBoardSquare(6)) {
                     isVictory = true;
                     return isVictory;
+                } else if ((Gameboard.getBoardSquare(7) == 'X' || Gameboard.getBoardSquare(7) == 'O') &&
+                Gameboard.getBoardSquare(7)  == Gameboard.getBoardSquare(8) &&
+                Gameboard.getBoardSquare(8)  == Gameboard.getBoardSquare(9)) {
+                    isVictory = true;
+                    return isVictory;
                 }
                 else return false;
-    }
+    };
+
+    const _checkVerticalVictory = () => {
+        //Horizontals - 1,4,7 + 2,5,8 + 3,6,9
+
+
+        if ((Gameboard.getBoardSquare(1) == 'X' || Gameboard.getBoardSquare(1) == 'O') &&
+                Gameboard.getBoardSquare(1)  == Gameboard.getBoardSquare(4) &&
+                Gameboard.getBoardSquare(4)  == Gameboard.getBoardSquare(7)) {
+                    isVictory = true;
+                    return isVictory;
+                } else if ((Gameboard.getBoardSquare(2) == 'X' || Gameboard.getBoardSquare(2) == 'O') &&
+                Gameboard.getBoardSquare(2)  == Gameboard.getBoardSquare(5) &&
+                Gameboard.getBoardSquare(5)  == Gameboard.getBoardSquare(8)) {
+                    isVictory = true;
+                    return isVictory;
+                } else if ((Gameboard.getBoardSquare(3) == 'X' || Gameboard.getBoardSquare(3) == 'O') &&
+                Gameboard.getBoardSquare(3)  == Gameboard.getBoardSquare(6) &&
+                Gameboard.getBoardSquare(6)  == Gameboard.getBoardSquare(9)) {
+                    isVictory = true;
+                    return isVictory;
+                }
+                else return false;
+    };
+
+    const _checkDiagonalVictory = () => {
+        //Diagonals - 1,5,9 + 3,5,7
+
+        console.log(Gameboard.getBoardSquare(1) + ' ' + Gameboard.getBoardSquare(5) + ' ' + Gameboard.getBoardSquare(9))
+        
+        
+        if ((Gameboard.getBoardSquare(5) == 'X' || Gameboard.getBoardSquare(5) == 'O') &&
+                Gameboard.getBoardSquare(1)  == Gameboard.getBoardSquare(5) &&
+                Gameboard.getBoardSquare(5)  == Gameboard.getBoardSquare(9)) {
+                    isVictory = true;
+                    console.log(isVictory);
+                    return isVictory;
+                } else if ((Gameboard.getBoardSquare(5) == 'X' || Gameboard.getBoardSquare(5) == 'O') &&
+                Gameboard.getBoardSquare(3)  == Gameboard.getBoardSquare(5) &&
+                Gameboard.getBoardSquare(5)  == Gameboard.getBoardSquare(7)) {
+                    isVictory = true;
+                    console.log(isVictory);
+                    return isVictory;
+                } 
+                else return false;
+    };
+
+    const _checkForVictory = () => {
+       return (_checkHorizontalVictory() || _checkVerticalVictory() || _checkDiagonalVictory() || false);
+    };
 
     //
 
@@ -211,6 +263,7 @@ const game = (() => {
         getPlayerNameFromUser, 
         player1,
         computer,
+        playerMove,
         computerMove
     };
 })();

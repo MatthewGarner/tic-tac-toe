@@ -48,7 +48,7 @@
 }
 
 #player-area {
-    height: 5vh;
+    height: 8vh;
 }
 
 #top-div {
@@ -60,9 +60,11 @@
 
 #match-title {
     height: 10vh;
+    display: block;
     text-align: center;
     position: relative;
     padding-top: 3vh;
+    font-size: 4vh;
 }
 
 .hidden {
