@@ -157,13 +157,25 @@ const game = (() => {
     teamButtons.forEach(button => button.addEventListener('click', _setNameAndTeams));
     
     const playerMove = (e) => {
+        
                 const pressedSquare = e.target.dataset.squareNumber;
+
+                if(Gameboard.getBoardSquare(pressedSquare) == 'X' || Gameboard.getBoardSquare(pressedSquare) == 'O') {
+                    return;
+                }
+
                 Gameboard.setSquare(pressedSquare, player1.getTeamIcon());
+
                 if (_checkForVictory()) {
                     alert('Player Wins!');
                     return;
                 };
-                window.setTimeout(game.computerMove(), 1500);
+
+                if (!_checkForAvailableMoves()) {
+                    alert ('A tie!');
+                    return;
+                }
+                window.setTimeout(game.computerMove, 1500);
     }
 
     const computerMove = () => {
@@ -175,6 +187,16 @@ const game = (() => {
         const chosenMove = availableMoves[0] + 1; //setSquare needs square number
         console.log(chosenMove);
         Gameboard.setSquare(chosenMove, computer.getTeamIcon());
+
+        if (_checkForVictory()) {
+            alert('Computer Wins!');
+            return;
+        };
+
+        if (!_checkForAvailableMoves()) {
+            alert ('A tie!');
+            return;
+        }
         
     }; 
 
